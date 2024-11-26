@@ -1,0 +1,64 @@
+﻿  MODELE ASM_HOVERCRAFT_V0 :
+ 
+
+  4 BOUCLES DE REFERENCE CIRCULAIRE TROUVEES
+ 
+
+   N° de boucle 1
+
+   Profondeur de la boucle = 3
+
+Numéro de fonction 8 (COMPOSANT, ID = 159) 
+  dans le modèle ASM_HOVERCRAFT_V0 se refère à:
+
+Numéro de fonction 10 (EXTRUSION_4, ID = 170) 
+  dans le modèle PRT_UPPER_BATI_V0 se refère à:
+
+Numéro de fonction 8 (COMPOSANT, ID = 159) 
+  dans le modèle ASM_HOVERCRAFT_V0 - cercle fermé.
+
+
+   N° de boucle 2
+
+   Profondeur de la boucle = 3
+
+Numéro de fonction 8 (COMPOSANT, ID = 159) 
+  dans le modèle ASM_HOVERCRAFT_V0 se refère à:
+
+Numéro de fonction 7 (EXTRUSION_1, ID = 53) 
+  dans le modèle PRT_LOWER_BATI_V0 se refère à:
+
+Numéro de fonction 8 (COMPOSANT, ID = 159) 
+  dans le modèle ASM_HOVERCRAFT_V0 - cercle fermé.
+
+
+   N° de boucle 3
+
+   Profondeur de la boucle = 3
+
+Numéro de fonction 10 (EXTRUSION_4, ID = 170) 
+  dans le modèle PRT_UPPER_BATI_V0 se refère à:
+
+Numéro de fonction 10 (EXTRUSION_3, ID = 206) 
+  dans le modèle PRT_LOWER_BATI_V0 se refère à:
+
+Numéro de fonction 10 (EXTRUSION_4, ID = 170) 
+  dans le modèle PRT_UPPER_BATI_V0 - cercle fermé.
+
+
+   N° de boucle 4
+
+   Profondeur de la boucle = 4
+
+Numéro de fonction 8 (COMPOSANT, ID = 159) 
+  dans le modèle ASM_HOVERCRAFT_V0 se refère à:
+
+Numéro de fonction 10 (EXTRUSION_4, ID = 170) 
+  dans le modèle PRT_UPPER_BATI_V0 se refère à:
+
+Numéro de fonction 10 (EXTRUSION_3, ID = 206) 
+  dans le modèle PRT_LOWER_BATI_V0 se refère à:
+
+Numéro de fonction 8 (COMPOSANT, ID = 159) 
+  dans le modèle ASM_HOVERCRAFT_V0 - cercle fermé.
+
