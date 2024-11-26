@@ -1,0 +1,58 @@
+﻿|***************************|
+    INFORMATIONS DE REFERENCE    
+|***************************|
+ Référence No.1 sortie de 1 
+
+Référence :
+   TYPE   : arête
+
+Statut   : dans la géométrie
+
+
+Propriétaire de la référence:
+ Modèle  :
+   NOM   : PRT_SKIRT_RING 
+   TYPE   : Pièce
+ Fonction:
+
+    NUMERO DE FONCTION 5
+    ID FONCTION INTERNE 49
+    FONCTION CREEE DANS ASSEMBLY ASM_HOVERCRAFT 
+    PARENTS = 1(#1) 5(#3) 3(#2) 
+    ENFANTS =  141(#6) 281(#7) 
+
+ PROTRUSION: Extrusion
+ 
+ N°   NOM  ELEMENT     INFO                                            STATUT
+ --- ------------ -----------                                        ------
+  1  Attributs    Un côté                                            Défini    
+  2  Section      Plan esq - Surface XY-HORIZ  de fonct #2 (PLAN DE  Défini    
+  3  Direction                                                       Défini    
+  4  Profondeur   Borgne, prof = 1                                   Défini    
+
+    NOM DE SECTION = Section 1 
+
+    FEATURE EST DANS COUCHE(S) :
+      AXES - OPERATION = AFFICHEE
+
+    COTES DE LA FONCTION:
+    d4 = (   Affiché :) 1 General_Dims
+         (Sauvegardé :) 1.0 ( 0.1, -0.1 ) 
+    d5 = (   Affiché :) 1 General_Dims
+         (Sauvegardé :) 1.0 ( 0.1, -0.1 ) 
+    d6 = (   Affiché :) 1 General_DimsR (faible)
+         (Sauvegardé :) 1.0 ( 0.1, -0.1 ) 
+    d7 = (   Affiché :) 30.29 General_DimsR (faible)
+         (Sauvegardé :) 30.29274825692 ( 0.3, -0.3 ) 
+    d8 = (   Affiché :) 83.75 General_Dims (faible)
+         (Sauvegardé :) 83.75 ( 0.3, -0.3 ) 
+    d9 = (   Affiché :) 53.25 General_Dims (faible)
+         (Sauvegardé :) 53.25 ( 0.3, -0.3 ) 
+    d10 = (   Affiché :) 8.37 General_Dims (faible)
+          (Sauvegardé :) 8.370163679155 ( 0.2, -0.2 ) 
+    d11 = (   Affiché :) 8.37 General_Dims (faible)
+          (Sauvegardé :) 8.370163679155 ( 0.2, -0.2 ) 
+RELATION                           PARAMETRE                 NOUVELLE VALEUR
+--------                           ---------                 --- -----
+
+*** Relations de pièce pilotées par cette fonction :
