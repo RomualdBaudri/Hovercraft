@@ -26,6 +26,6 @@ void loop() {
   for (pos = angleMax; pos >= angleMin; pos -= 1) {
     currentPos = currentPos + (pos - currentPos) / 2; // Smooth transition
     myServo.write(currentPos); // Write the smoothed position
-    delay(20); // Stabilization delay
+    delay(30); // Stabilization delay
   }
 }
