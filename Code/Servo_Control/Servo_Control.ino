@@ -48,9 +48,9 @@ void setup() {
 
   Serial.println("Calibrating ESC...");
   escMotor.writeMicroseconds(MAX_SIGNAL);
-  delay(4000);
+  delay(2100);
   escMotor.writeMicroseconds(MIN_SIGNAL);
-  delay(4000);
+  delay(2100);
   Serial.println("ESC calibration complete.");
 
   // Initialize BLE
