@@ -1,2 +1,2 @@
 # Hovercraft
-SMR PIST Project on an mini Hovercraft
+SMR PIST Project on an Mini Hovercraft
