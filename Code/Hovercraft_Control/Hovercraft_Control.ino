@@ -3,14 +3,14 @@
 #include <Servo.h> // Servo library
 
 // Define constants and pins
-#define ANGLE_STEP 10         // Maximum angle step per update
-#define DELAY_MS 25           // Delay between updates (in milliseconds)
+#define ANGLE_STEP 40         // Maximum angle step per update
+#define DELAY_MS 10           // Delay between updates (in milliseconds)
 #define SERVO_PIN 6           // Servo motor controlled by JSL
 #define MOTOR_PIN_1 3         // ESC 1 pin
 #define MOTOR_PIN_2 8         // ESC 2 pin (changed to a PWM-capable pin)
-#define MAX_SIGNAL 1200       // Safe max signal for ESC
+#define MAX_SIGNAL 1250       // Safe max signal for ESC 1300
 #define MIN_SIGNAL 1000       // Minimum signal for ESC
-#define MOTOR_POWER_15 1150   // Motor power at 15% (constant)
+
 
 // BLE service and characteristic UUIDs
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
@@ -20,6 +20,7 @@
 #define JSL_UUID "dbaf26fc-8ed7-47f6-9003-f72867b4de3c"
 #define JSR_UUID "dbaf26fc-4ed7-47f6-9003-f72867b4de3c"
 #define GONFLE_UUID "daaea4641-7cc2-4a4d-b34e-444ce4fea788"
+#define IR_UUID "5ee18ee2-5c3d-43e7-844b-f9fa634530ce"
 
 // BLE service and characteristics
 BLEService hovercraftService(SERVICE_UUID);
@@ -29,6 +30,7 @@ BLEByteCharacteristic blueCharacteristic(BLUE_UUID, BLERead | BLEWrite | BLENoti
 BLEByteCharacteristic JSL(JSL_UUID, BLERead | BLEWrite | BLENotify);
 BLEByteCharacteristic JSR(JSR_UUID, BLERead | BLEWrite | BLENotify);
 BLEByteCharacteristic gonfleCharacteristic(GONFLE_UUID, BLERead | BLEWrite | BLENotify);
+BLEStringCharacteristic IRCharacteristic(IR_UUID, BLERead | BLEWrite | BLENotify, 10);
 
 // RGB LED pins (active low)
 const int redPin = LEDR;
@@ -39,6 +41,10 @@ const int bluePin = LEDB;
 Servo escMotor1;     // ESC for motor 1 (JSR)
 Servo escMotor2;     // ESC for motor 2 (inflation control)
 Servo servoMotor;    // Servo controlled by JSL
+
+// IR sensor pin
+const int signalPin = 11; // Line Finder IR sensor connected to D11
+int counterNumber = 0; // Initialize the counterNumber variable
 
 // BLE connection state
 bool BLE_Connected = false;
@@ -53,6 +59,7 @@ void updateServo(int targetAngle);
 void updateThrottle(int8_t throttleInput);
 void handleGonfle(byte gonfleValue);
 void initializeESC(Servo &motor, int motorNumber);
+void linefinder();
 
 void setup() {
   Serial.begin(115200);
@@ -67,6 +74,9 @@ void setup() {
   initializeESC(escMotor1, 1);
   initializeESC(escMotor2, 2);
 
+  // Setup pin for IR communication
+  pinMode(signalPin, INPUT);  // initialize the digital pin as an output:
+
   // Initialize BLE
   setupBLE();
 
@@ -80,6 +90,7 @@ void setup() {
 
 void loop() {
   handleBLE(); // Process BLE connections and characteristic writes
+  lineFinder(); // Check the line finder sensor and send BLE signals
 }
 
 // Function Definitions
@@ -100,6 +111,7 @@ void setupBLE() {
   hovercraftService.addCharacteristic(JSL);
   hovercraftService.addCharacteristic(JSR);
   hovercraftService.addCharacteristic(gonfleCharacteristic);
+  hovercraftService.addCharacteristic(IRCharacteristic);
 
   BLE.addService(hovercraftService);
   BLE.advertise();
@@ -142,12 +154,13 @@ void updateLED(int pin, byte value) {
 
 void updateServo(int targetAngle) {
   static unsigned long lastUpdateTime = 0;
-  static int currentServoAngle = 0; // Assurez-vous que cette variable est déclarée quelque part globalement ou statiquement.
 
   Serial.print("Joystick byte received: ");
   Serial.print(targetAngle);
   Serial.print(", Target servo angle: ");
   Serial.println(targetAngle);
+
+
 
   // Vérifiez si un délai s'est écoulé depuis la dernière mise à jour
   unsigned long currentTime = millis();
@@ -155,7 +168,7 @@ void updateServo(int targetAngle) {
     lastUpdateTime = currentTime;
 
     // Calculez le prochain angle en fonction de la direction
-    if (currentServoAngle < targetAngle) {
+    if (currentServoAngle <  targetAngle) {
       currentServoAngle = min(currentServoAngle + ANGLE_STEP, targetAngle);
     } else if (currentServoAngle > targetAngle) {
       currentServoAngle = max(currentServoAngle - ANGLE_STEP, targetAngle);
@@ -180,11 +193,21 @@ void updateThrottle(int8_t throttleInput) {
 }
 
 void handleGonfle(byte gonfleValue) {
+  static int motorPower = MIN_SIGNAL; // Start at the minimum signal
+  const int targetPower = 1180;       // 25% power corresponds to 1250 microseconds
+  const int stepSize = 10;           // Increment step size for smooth transitions
+  const int delayBetweenSteps = 25;  // Delay between steps (in milliseconds)
   if (gonfleValue == 1) {
-    escMotor2.writeMicroseconds(MOTOR_POWER_15);
-    Serial.println("Motor set to 15% power");
+     while (motorPower < targetPower) {
+      motorPower = min(motorPower + stepSize, targetPower); // Increment motor power
+      escMotor2.writeMicroseconds(motorPower);
+      Serial.print("Motor power set to: ");
+      Serial.println(motorPower);
+      delay(delayBetweenSteps); // Small delay for smooth ramp-up
+    }
   } else {
-    escMotor2.writeMicroseconds(MIN_SIGNAL);
+    motorPower = MIN_SIGNAL;
+    escMotor2.writeMicroseconds(motorPower);
     Serial.println("Motor set to 0% power");
   }
 }
@@ -196,3 +219,29 @@ void initializeESC(Servo &motor, int motorNumber) {
 
   Serial.print("ESC "); Serial.print(motorNumber); Serial.println(" Setting complete.");
 }
+
+void lineFinder() {
+  char counterString[10];       // Buffer to hold the counter as a string
+  String currentStatus = "";
+  if (digitalRead(signalPin) == LOW) {
+    //Serial.print("White Line Detected Counter: ");
+    //Serial.println(counterNumber);
+    currentStatus = "white";
+  } else {
+    if(currentStatus == "white"){
+      counterNumber += 1;
+    }
+    currentStatus = "black";
+    //Serial.print("Black line detected. Counter: ");
+    //Serial.println(counterNumber);
+  }
+
+  // Convert counterNumber to a string
+  itoa(counterNumber, counterString, 10); // Convert to base-10 string
+  
+  // Send the counter string via BLE
+  IRCharacteristic.writeValue(String(counterString));
+
+  delay(20); // Short delay for sensor reading stability
+}
+
